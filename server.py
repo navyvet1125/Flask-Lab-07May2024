@@ -164,6 +164,29 @@ def add_by_uuid(uuid):
     except NameError:
         return {"message": "Error adding person"}, 500
 
+# Create update_by_uuid route here
+@app.route("/person/<uuid>", methods=["PUT"])
+def update_by_uuid(uuid):
+    """Update a person in the database
+        Returns:
+        json: person if found, with status of 200
+        404: if not found
+    """
+    new_person = request.json
+    if not new_person:
+        return {"message": "Invalid input parameter"}, 422
+        # Validate the input data
+    if not new_person.get('first_name') or not new_person.get('last_name'):
+        return {"message": "Invalid input parameter"}, 422
+    for person in data:
+        if person['id'] == str(uuid):
+            person.update(new_person)
+            return {"message": "Person updated"}, 200
+
+    return {"message": "Person not found"}, 404
+
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
